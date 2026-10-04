@@ -14,6 +14,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
+# ⚠️ 生产构建必须带 `tauri/custom-protocol` 特性(见下方注释), 否则前端会走 devUrl。
 tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-single-instance = "2"
 tauri-plugin-autostart = "2"
@@ -28,11 +29,21 @@ once_cell = "1"
 regex = "1"
 sys-locale = "0.3"
 uuid = { version = "1", features = ["v4"] }
+# 依赖图里 schemars(0.8.22) 的 preserve_order 分支会用到 indexmap 1.x,
+# 但 indexmap 1.9.3 在 not(feature="std") 下 IndexMap 需要 3 个泛型参数,
+# 会导致 schemars 编译失败(E0107)。这里显式开启 std 以修复特性统一。
+indexmap = { version = "1", features = ["std"] }
 
 [target.'cfg(windows)'.dependencies]
 windows = { version = "0.58", features = ["Win32_System_Power", "Win32_Foundation"] }
 
 [profile.release]
+# 注意(踩过的坑): 生产构建必须让 tauri 启用 `custom-protocol` 特性, 否则
+#   tauri/build.rs 里 `dev = !custom_protocol` 判定为 dev, 前端会去连 devUrl
+#   (http://localhost:1420), 表现为窗口显示"localhost 已拒绝连接"/"无法访问此页面"。
+#   ✅ 正确: `npm run tauri:build` 或 `npx tauri build`(CLI 会自动带上该特性)
+#   ⚠️ 若直接用 cargo: `cargo build --release --features tauri/custom-protocol`
+
 codegen-units = 1
 lto = true
 opt-level = "s"

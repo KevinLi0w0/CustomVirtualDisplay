@@ -4,9 +4,11 @@
     <meta charset="UTF-8" />
     <title>Easy Virtual Display</title>
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!-- 放宽 CSP: 允许 Tauri 的 asset:/ipc: 自定义协议与内联脚本, 避免模块脚本在
+         asset://localhost 协议下被 'self' 误判为跨源而被拦截(导致白屏/连接错误)。 -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+      content="default-src 'self' 'unsafe-inline' 'unsafe-eval' asset: ipc: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' 'unsafe-inline' asset: ipc: data:"
     />
   </head>
 

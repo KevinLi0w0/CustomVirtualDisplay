@@ -101,13 +101,19 @@ pub struct HostSnapshot {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", default)]
 pub struct AppSettings {
     pub launch_on_login: bool,
     pub close_to_tray: bool,
     pub start_minimized: bool,
     pub fallback_display: bool,
     pub keep_screen_on: bool,
+    /// 启动后自动添加一块虚拟显示器（延迟 `auto_add_display_delay_secs` 秒）。
+    pub auto_add_display_on_launch: bool,
+    /// 启动后自动添加虚拟显示器的延迟秒数。
+    pub auto_add_display_delay_secs: u32,
+    /// 启动后自动切换到虚拟显示器（仅第二屏，物理屏熄灭）。
+    pub auto_switch_to_virtual_on_launch: bool,
     pub theme: AppTheme,
     pub language: AppLanguage,
 }
@@ -156,6 +162,9 @@ pub struct AppSettingsPatch {
     pub start_minimized: Option<bool>,
     pub fallback_display: Option<bool>,
     pub keep_screen_on: Option<bool>,
+    pub auto_add_display_on_launch: Option<bool>,
+    pub auto_add_display_delay_secs: Option<u32>,
+    pub auto_switch_to_virtual_on_launch: Option<bool>,
     pub theme: Option<AppTheme>,
     pub language: Option<AppLanguage>,
 }
@@ -168,6 +177,9 @@ impl Default for AppSettingsPatch {
             start_minimized: None,
             fallback_display: None,
             keep_screen_on: None,
+            auto_add_display_on_launch: None,
+            auto_add_display_delay_secs: None,
+            auto_switch_to_virtual_on_launch: None,
             theme: None,
             language: None,
         }
@@ -181,8 +193,17 @@ pub fn default_app_settings() -> AppSettings {
         start_minimized: false,
         fallback_display: false,
         keep_screen_on: false,
+        auto_add_display_on_launch: false,
+        auto_add_display_delay_secs: 30,
+        auto_switch_to_virtual_on_launch: true,
         theme: AppTheme::System,
         language: AppLanguage::System,
+    }
+}
+
+impl Default for AppSettings {
+    fn default() -> Self {
+        default_app_settings()
     }
 }
 

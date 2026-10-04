@@ -20,6 +20,9 @@ const makeSnapshot = (overrides: Partial<AppSnapshot['host']> = {}): AppSnapshot
     startMinimized: false,
     fallbackDisplay: false,
     keepScreenOn: false,
+    autoAddDisplayOnLaunch: false,
+    autoAddDisplayDelaySecs: 30,
+    autoSwitchToVirtualOnLaunch: true,
     theme: 'system',
     language: 'system'
   },

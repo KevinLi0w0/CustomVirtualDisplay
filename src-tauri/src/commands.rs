@@ -115,6 +115,15 @@ fn merge_settings(mut cur: AppSettings, patch: AppSettingsPatch) -> AppSettings 
     if let Some(v) = patch.keep_screen_on {
         cur.keep_screen_on = v;
     }
+    if let Some(v) = patch.auto_add_display_on_launch {
+        cur.auto_add_display_on_launch = v;
+    }
+    if let Some(v) = patch.auto_add_display_delay_secs {
+        cur.auto_add_display_delay_secs = v;
+    }
+    if let Some(v) = patch.auto_switch_to_virtual_on_launch {
+        cur.auto_switch_to_virtual_on_launch = v;
+    }
     if let Some(v) = patch.theme {
         cur.theme = v;
     }

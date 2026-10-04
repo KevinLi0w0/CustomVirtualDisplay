@@ -20,6 +20,14 @@ export default {
   start_minimized_desc: 'Automatically minimize window after startup',
   fallback_display_desc: 'Automatically switch to virtual display when primary disconnects',
   keep_screen_on_desc: 'Prevent system sleep when virtual display is active',
+  auto_add_display_on_launch: 'Auto-add Display on Launch',
+  auto_add_display_delay: 'Delay (seconds)',
+  auto_add_display_on_launch_desc:
+    'Automatically add one virtual display shortly after launch if none is active',
+  auto_add_display_delay_desc: 'How many seconds to wait after launch before adding (0-600)',
+  auto_switch_to_virtual_on_launch: 'Switch to Virtual Display on Launch',
+  auto_switch_to_virtual_on_launch_desc:
+    'After the virtual display is active, switch to "second screen only" so the physical screen turns off',
   gpu_selection: 'GPU Selection',
   gpu_selection_desc: 'Specify which GPU virtual displays use',
   custom_modes_count: '{{count}} / 5',

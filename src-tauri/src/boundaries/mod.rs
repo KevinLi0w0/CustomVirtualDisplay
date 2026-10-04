@@ -4,6 +4,7 @@
 mod fallback_display;
 mod keep_screen_on;
 mod launch_on_login;
+pub mod startup_display;
 
 use std::sync::Arc;
 
@@ -12,6 +13,7 @@ use tauri::{AppHandle, Wry};
 pub use fallback_display::{AddDisplayCallback, FallbackDisplayBoundary};
 pub use keep_screen_on::KeepScreenOnBoundary;
 pub use launch_on_login::LaunchOnLoginBoundary;
+pub use startup_display::spawn_startup_auto_add;
 
 use crate::contracts::{AppSettings, HostSnapshot};
 use crate::host::StdioJsonRpcBackend;

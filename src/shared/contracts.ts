@@ -73,6 +73,12 @@ export interface AppSettings {
   startMinimized: boolean
   fallbackDisplay: boolean
   keepScreenOn: boolean
+  /** 启动后自动添加一块虚拟显示器（延迟 autoAddDisplayDelaySecs 秒）。 */
+  autoAddDisplayOnLaunch: boolean
+  /** 启动后自动添加虚拟显示器的延迟秒数（0-600）。 */
+  autoAddDisplayDelaySecs: number
+  /** 启动后自动切换到虚拟显示器（仅第二屏，物理屏熄灭）。 */
+  autoSwitchToVirtualOnLaunch: boolean
   theme: AppTheme
   language: AppLanguage
 }
@@ -89,6 +95,9 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   startMinimized: false,
   fallbackDisplay: false,
   keepScreenOn: false,
+  autoAddDisplayOnLaunch: false,
+  autoAddDisplayDelaySecs: 30,
+  autoSwitchToVirtualOnLaunch: true,
   theme: 'system',
   language: 'system'
 }

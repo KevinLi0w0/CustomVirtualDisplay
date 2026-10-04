@@ -6,6 +6,9 @@ import { resolve } from 'node:path'
 const tauriDevHost = process.env.TAURI_DEV_HOST
 
 export default defineConfig({
+  // 用相对路径(base:'./')产物, 让打包后的 index.html 在 asset://localhost 等自定义
+  // 协议下也能正确解析 ./assets/* (绝对路径 /assets/* 在部分 WebView2 环境下会失败)。
+  base: './',
   root: resolve(__dirname, 'src/renderer'),
   plugins: [tailwindcss(), react()],
   resolve: {

@@ -61,6 +61,7 @@ pub fn run() {
             let app_handle = app.handle().clone();
 
             let settings = settings_store::load_or_default(&app_handle);
+            let start_minimized = settings.start_minimized;
             let system_locale = sys_locale::get_locale().unwrap_or_else(|| "en-US".to_string());
 
             let factory_handle = app_handle.clone();
@@ -73,6 +74,9 @@ pub fn run() {
             // Apply persisted launch-on-login + keep-screen-on at boot. fallback_display
             // is snapshot-driven (handled below by the broadcaster) so we don't fire it here.
             boundaries.sync_settings(&settings);
+
+            // NEW: 启动后延迟自动加屏（独立于 fallback_display，只执行一次）。
+            crate::boundaries::spawn_startup_auto_add(backend.clone(), &settings);
 
             // Compose AppSnapshot on every applied host snapshot, then fan out to (a) the
             // renderer via `snapshot-changed`, (b) the tray (tooltip + checkboxes), and
@@ -110,6 +114,21 @@ pub fn run() {
             app.manage(runtime);
 
             tray::setup(&app_handle)?;
+
+            // 应用 `startMinimized`: 上游只存了设置、启动时并未真正使用。
+            // 关键修复：不能在 setup() 里立即 hide()，否则会抢在 WebView 首次导航
+            // (asset://localhost/index.html) 完成之前把窗口藏起来，导致 WebView 停在
+            // 空白/错误页(表现为「localhost 已拒绝连接」)。改为延迟到 WebView 就绪后再
+            // 隐藏 —— 先让前端正常加载一次，之后只在托盘显示图标。
+            if start_minimized {
+                let app_handle = app.handle().clone();
+                tauri::async_runtime::spawn(async move {
+                    tokio::time::sleep(std::time::Duration::from_millis(800)).await;
+                    if let Some(window) = app_handle.get_webview_window("main") {
+                        let _ = window.hide();
+                    }
+                });
+            }
 
             // Intercept the X button: close-to-tray hides the window; otherwise run the
             // quit flow ourselves (so we can confirm with the user and tear the host down
